@@ -22,7 +22,7 @@ public class AppointmentsController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.getRequestDispatcher("/Views/Appointments/appointments.jsp").forward(request, response);
     }
 
     @Override

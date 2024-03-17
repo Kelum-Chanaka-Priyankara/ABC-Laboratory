@@ -22,7 +22,7 @@ public class TestsController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.getRequestDispatcher("/Views/Tests/tests.jsp").forward(request, response);
     }
 
     @Override

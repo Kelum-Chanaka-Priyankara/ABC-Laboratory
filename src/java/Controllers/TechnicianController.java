@@ -22,7 +22,7 @@ public class TechnicianController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+    request.getRequestDispatcher("/Views/Technician/technician.jsp").forward(request, response);
     }
 
     @Override

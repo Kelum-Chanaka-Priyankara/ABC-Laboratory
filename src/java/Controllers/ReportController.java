@@ -22,7 +22,7 @@ public class ReportController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        request.getRequestDispatcher("/Views/Reports/report_progress.jsp").forward(request, response);
     }
 
     @Override
