@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  */
 public class DatabaseUtilizer {
 
-    //Appointments
+    //Appointments Section -----------------------------------------------------
     public static List<AppointmentViewModel> getAppointmentsList() {
         var appointmentsList = new ArrayList<AppointmentViewModel>();
         try (var connection = DatabaseConnector.getConnection()) {
@@ -175,6 +175,7 @@ public class DatabaseUtilizer {
         }
         return testsSelectionList;
     }
+    //Appointments Section -----------------------------------------------------
 
     //Dashboard Section---------------------------------------------------------
     public static DailyProgressViewModel getDailyProgress() {
@@ -322,4 +323,67 @@ public class DatabaseUtilizer {
         return lastWeekPregress;
     }
     //Dashboard Section---------------------------------------------------------
+    
+    // Payment Section ---------------------------------------------------------
+    //Payments
+    public static List<PaymentViewModel> getPaymentsList() {
+        ArrayList<PaymentViewModel> paymentsList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_payments()}");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var payment = new PaymentViewModel(resultSet.getInt("payment_id"), resultSet.getInt("appointment_id"), resultSet.getString("test_name"), resultSet.getBigDecimal("charges"), resultSet.getString("payment_method"), resultSet.getString("payment_status"));
+                paymentsList.add(payment);
+            }
+
+        } catch (Exception e) {
+        }
+        return paymentsList;
+    }
+
+    public static PaymentModel getPayment(int paymentId) {
+        PaymentModel payment = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_payment(?)}");
+            callableStatement.setInt(1, paymentId);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                payment = new PaymentModel(resultSet.getInt("payment_id"), resultSet.getInt("appointment_id"), resultSet.getString("test_name"), resultSet.getBigDecimal("charges"), resultSet.getString("payment_method"), resultSet.getBoolean("payment_status"), resultSet.getString("payment_date"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getString("email"), resultSet.getString("phone_number"));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+
+        return payment;
+    }
+
+    public static boolean updatePayment(PaymentModel payment) {
+        EmailSender mailsender = new EmailSender();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL update_payment(?,?,?) }");
+            callableStatement.setInt(1, payment.getPayment_id());
+            callableStatement.setString(2, payment.getPayment_method());
+            callableStatement.setBoolean(3, payment.isPayment_status());
+
+            var rowsAffected = callableStatement.executeUpdate();
+            if (rowsAffected > 0 && payment.isPayment_status()) {
+                return mailsender.sendBill(
+                        payment.getEmail(),
+                        payment.getFirst_name(),
+                        payment.getLast_name(),
+                        payment.getGender(),
+                        payment.getAddress(),
+                        payment.getPhone_number(),
+                        payment.getPayment_id(),
+                        payment.getAppointment_id(),
+                        payment.getPayment_date(),
+                        payment.getTest_name(),
+                        payment.getCharges().toString());
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return false;
+    }
+    //Payment Section ----------------------------------------------------------
 }

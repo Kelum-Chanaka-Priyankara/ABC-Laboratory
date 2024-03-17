@@ -41,6 +41,16 @@
     });
 //Appointments Section End------------------------------------------------------
 
+// Payments Section Start-------------------------------------------------------
+    $(document).on('click', '#modal-edit-payments', function () {
+        var title = "Confirm Modification", buttonText = "Update", buttonClass = "btn btn-warning", url = 'Payments?page=Edit&paymentId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Payments", formMethod = "POST", actionType = "Update";
+        changeForm(actionURL, formMethod, actionType);
+    });
+// Payments Section End---------------------------------------------------------
+
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
         var currentButtonClass = $('#modal-button').attr('class');
@@ -117,7 +127,7 @@
             });
         });
 
-       // Send a GET request
+        // Send a GET request
         $('#modal-form').submit(function (event) {
             event.preventDefault();
             var form = $(this);
