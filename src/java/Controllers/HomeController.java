@@ -23,7 +23,8 @@ public class HomeController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
                 var session = request.getSession();
-                session.setAttribute("authType", "admn");
+                session.setAttribute("authType", "tcnc");
+                session.setAttribute("userId", 2);
         request.getRequestDispatcher("/Views/Home/home.jsp").forward(request, response);
     }
 

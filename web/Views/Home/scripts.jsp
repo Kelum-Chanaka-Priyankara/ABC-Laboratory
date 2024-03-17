@@ -129,6 +129,16 @@
     });
 // Users Section End------------------------------------------------------------
 
+// Technician Section Start-----------------------------------------------------
+    $(document).on('click', '#modal-update-test-reports', function () {
+        var title = "Confirm Modification", buttonText = "Save", buttonClass = "btn btn-primary", url = '/ABCLaboratory/Technician?page=UpdateTestReport&testReportId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Technician", formMethod = "POST", actionType = "Update";
+        changeForm(actionURL, formMethod, actionType);
+    });
+// Technician Section End-------------------------------------------------------
+
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
         var currentButtonClass = $('#modal-button').attr('class');

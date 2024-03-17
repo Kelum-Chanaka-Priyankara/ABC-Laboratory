@@ -671,6 +671,37 @@ public class DatabaseUtilizer {
         }
         return false;
     }
-
     // Users Section -----------------------------------------------------------
+    
+    // Technician Section ------------------------------------------------------
+    public static List<TechnicianTestReportViewModel> getTechnicianTestsList(int userId) {
+        ArrayList<TechnicianTestReportViewModel> appointmentsList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_technician_test_reports(?) }");
+            callableStatement.setInt(1, userId);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var appointment = new TechnicianTestReportViewModel(resultSet.getInt("appointment_id"), resultSet.getString("patient_name"), resultSet.getString("gender"), resultSet.getInt("age"), resultSet.getString("appointment_date"), resultSet.getString("appointment_time"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"), resultSet.getString("report"), resultSet.getInt("test_report_id"));
+                appointmentsList.add(appointment);
+            }
+        } catch (Exception e) {
+        }
+        return appointmentsList;
+    }
+
+    public static boolean updateTechnicianTestReport(int testReportId, String testDate, String testTime, String testReport) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL update_technician_test_report(?,?,?,?) }");
+            callableStatement.setInt(1, testReportId);
+            callableStatement.setString(2, testDate);
+            callableStatement.setString(3, testTime);
+            callableStatement.setString(4, testReport);
+            var rowsAffected = callableStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    // Technician Section ------------------------------------------------------
 }
