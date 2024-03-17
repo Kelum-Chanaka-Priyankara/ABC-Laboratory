@@ -56,8 +56,6 @@ import java.util.logging.Logger;
  */
 public class DatabaseUtilizer {
 
-   
-    
     //Appointments
     public static List<AppointmentViewModel> getAppointmentsList() {
         var appointmentsList = new ArrayList<AppointmentViewModel>();
@@ -178,33 +176,150 @@ public class DatabaseUtilizer {
         return testsSelectionList;
     }
 
-   
-   
+    //Dashboard Section---------------------------------------------------------
+    public static DailyProgressViewModel getDailyProgress() {
+        DailyProgressViewModel progress = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_daily_progress() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                progress = new DailyProgressViewModel(resultSet.getInt("completed_appointments"), resultSet.getBigDecimal("income"));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return progress;
+    }
 
-    
+    public static DailyIncomeViewModel getDailyIncome() {
+        DailyIncomeViewModel incomeByMethod = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_daily_income_by_payment_method() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                incomeByMethod = new DailyIncomeViewModel(resultSet.getString("payment_method"), resultSet.getBigDecimal("income"));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return incomeByMethod;
+    }
 
-    
+    public static int getDailyTests() {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_daily_tests() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getInt("tests_today");
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return 0;
+    }
 
-   
+    public static int getDailyCustomers() {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_daily_customers() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getInt("customers_today");
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return 0;
+    }
 
-    
+    public static int getDailyAppointments() {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_daily_appointments() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                return resultSet.getInt("appointments_today");
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return 0;
+    }
 
-    
+    public static List<LatestAppointmentsViewModel> getLatestAppointmentsList() {
+        ArrayList<LatestAppointmentsViewModel> latestAppointmentsList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_latest_appointments() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var latestAppointment = new LatestAppointmentsViewModel(resultSet.getString("appointment_date"), resultSet.getString("appointment_time"), resultSet.getString("technician_name"), resultSet.getString("test_name"));
+                latestAppointmentsList.add(latestAppointment);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return latestAppointmentsList;
+    }
 
-   
-    
+    public static List<LatestPaymentsViewModel> getLatestPaymentsList() {
+        ArrayList<LatestPaymentsViewModel> latestPaymentsList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_latest_payments() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var latestPayment = new LatestPaymentsViewModel(resultSet.getString("payment_date"), resultSet.getBigDecimal("charges"), resultSet.getString("payment_method"));
+                latestPaymentsList.add(latestPayment);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return latestPaymentsList;
+    }
 
-    
-    
-    
+    public static List<TestPopularityViewModel> getPopularTestsList() {
+        ArrayList<TestPopularityViewModel> testPopularityList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_daily_popular_tests() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var test = new TestPopularityViewModel(resultSet.getString("test_name"), resultSet.getInt("count"));
+                testPopularityList.add(test);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return testPopularityList;
+    }
 
-   
-    
-   
-    
+    public static List<ProgressModel> getLastWeekProgress() {
+        ArrayList<ProgressModel> lastWeekPregress = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_last_week_progress()}");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var dailyProgress = new ProgressModel(resultSet.getString("payment_date"), resultSet.getBigDecimal("income"));
+                lastWeekPregress.add(dailyProgress);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return lastWeekPregress;
+    }
 
-    
-   
+    public static List<ProgressModel> getThisWeekProgress() {
+
+        ArrayList<ProgressModel> lastWeekPregress = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_weekly_progress()}");
+            var resultSet = callableStatement.executeQuery();
+
+            while (resultSet.next()) {
+                var dailyProgress = new ProgressModel(resultSet.getString("payment_date"), resultSet.getBigDecimal("income"));
+                lastWeekPregress.add(dailyProgress);
+
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return lastWeekPregress;
+    }
+    //Dashboard Section---------------------------------------------------------
 }
-
-
