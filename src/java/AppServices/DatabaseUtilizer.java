@@ -484,4 +484,103 @@ public class DatabaseUtilizer {
     }
     // Tests Section -----------------------------------------------------------
     
+    
+    
+    // Patients Section --------------------------------------------------------
+    public static List<PatientViewModel> getPatientsList() {
+
+        ArrayList<PatientViewModel> patientsList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_patients()}");
+            var resultSet = callableStatement.executeQuery();
+
+            while (resultSet.next()) {
+
+                var patient = new PatientViewModel(resultSet.getInt("patient_id"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("gender"), resultSet.getInt("age"), resultSet.getString("address"), resultSet.getString("email"), resultSet.getString("phone_number"), resultSet.getString("password_status"));
+                patientsList.add(patient);
+
+            }
+        } catch (Exception e) {
+        }
+
+        return patientsList;
+    }
+
+    public static PatientModel getPatient(int patientId) {
+        PatientModel patient = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_patient(?) }");
+            callableStatement.setInt(1, patientId);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                patient = new PatientModel(resultSet.getInt("patient_id"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("gender"), resultSet.getInt("age"), resultSet.getString("address"), resultSet.getString("email"), resultSet.getString("phone_number"));
+            }
+        } catch (Exception e) {
+        }
+        return patient;
+    }
+
+    public static boolean addPatient(PatientModel patient) {
+
+        var passwordText = PasswordGenerator.generatePassword(12);
+        var hashCode = Encryptor.encryptSHA256(passwordText);
+        EmailSender mailsender = new EmailSender();
+        boolean isMailSuccess = false;
+
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL add_patient(?,?,?,?,?,?,?,?)}");
+            callableStatement.setString(1, patient.getFirst_name());
+            callableStatement.setString(2, patient.getLast_name());
+            callableStatement.setString(3, patient.getGender());
+            callableStatement.setInt(4, patient.getAge());
+            callableStatement.setString(5, patient.getAddress());
+            callableStatement.setString(6, patient.getEmail());
+            callableStatement.setString(7, patient.getPhone_number());
+
+            callableStatement.setString(8, hashCode);
+
+            isMailSuccess = mailsender.sendPassword(patient.getEmail(), patient.getFirst_name(), patient.getLast_name(), patient.getGender(), passwordText);
+
+            if (isMailSuccess) {
+                var rowsAffected = callableStatement.executeUpdate();
+                return rowsAffected > 0;
+            }
+
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public static boolean updatePatient(PatientModel patient) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL update_patient(?,?,?,?,?,?,?,?)}");
+            callableStatement.setInt(1, patient.getPatient_id());
+            callableStatement.setString(2, patient.getFirst_name());
+            callableStatement.setString(3, patient.getLast_name());
+            callableStatement.setString(4, patient.getGender());
+            callableStatement.setInt(5, patient.getAge());
+            callableStatement.setString(6, patient.getAddress());
+            callableStatement.setString(7, patient.getEmail());
+            callableStatement.setString(8, patient.getPhone_number());
+
+            var rowsAffected = callableStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public static boolean deletePatient(int patientId) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL delete_patient(?) }");
+            callableStatement.setInt(1, patientId);
+
+            var rowsAffected = callableStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+    // Patients Section --------------------------------------------------------
 }

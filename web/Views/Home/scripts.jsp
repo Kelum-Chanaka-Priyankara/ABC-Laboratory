@@ -77,6 +77,31 @@
     });
 // Tests Section End------------------------------------------------------------
 
+// Patients Section Start-------------------------------------------------------
+    $(document).on('click', '#modal-add-patients', function () {
+        var title = "Confirm Insertion", buttonText = "Save", buttonClass = "btn btn-primary", url = "Patients?page=Add";
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Patients", formMethod = "POST", actionType = "Insert";
+        changeForm(actionURL, formMethod, actionType);
+    });
+
+    $(document).on('click', '#modal-edit-patients', function () {
+        var title = "Confirm Modification", buttonText = "Update", buttonClass = "btn btn-warning", url = 'Patients?page=Edit&patientId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Patients", formMethod = "POST", actionType = "Update";
+        changeForm(actionURL, formMethod, actionType);
+    });
+
+    $(document).on('click', '#modal-delete-patients', function () {
+        var title = "Confirm Deletion", buttonText = "Delete", buttonClass = "btn btn-danger", url = 'Patients?page=Delete&patientId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Patients", formMethod = "GET", actionType = "Delete";
+        changeForm(actionURL, formMethod, actionType);
+    });
+// Patients Section End--------------------------------------------------------- 
 
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
