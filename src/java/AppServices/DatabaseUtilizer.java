@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  */
 public class DatabaseUtilizer {
 
-    //Appointments Section -----------------------------------------------------
+    // Appointments Section -----------------------------------------------------
     public static List<AppointmentViewModel> getAppointmentsList() {
         var appointmentsList = new ArrayList<AppointmentViewModel>();
         try (var connection = DatabaseConnector.getConnection()) {
@@ -175,9 +175,9 @@ public class DatabaseUtilizer {
         }
         return testsSelectionList;
     }
-    //Appointments Section -----------------------------------------------------
+    // Appointments Section -----------------------------------------------------
 
-    //Dashboard Section---------------------------------------------------------
+    // Dashboard Section---------------------------------------------------------
     public static DailyProgressViewModel getDailyProgress() {
         DailyProgressViewModel progress = null;
         try (var connection = DatabaseConnector.getConnection()) {
@@ -322,10 +322,9 @@ public class DatabaseUtilizer {
         }
         return lastWeekPregress;
     }
-    //Dashboard Section---------------------------------------------------------
+    // Dashboard Section---------------------------------------------------------
 
     // Payment Section ---------------------------------------------------------
-    //Payments
     public static List<PaymentViewModel> getPaymentsList() {
         ArrayList<PaymentViewModel> paymentsList = new ArrayList<>();
         try (var connection = DatabaseConnector.getConnection()) {
@@ -385,7 +384,7 @@ public class DatabaseUtilizer {
         }
         return false;
     }
-    //Payment Section ----------------------------------------------------------
+    // Payment Section ----------------------------------------------------------
 
     // Report Section ----------------------------------------------------------
     public static List<ProgressModel> getTotalProgress() {
@@ -403,4 +402,86 @@ public class DatabaseUtilizer {
         return totalProgress;
     }
     // Report Section ----------------------------------------------------------
+    
+    // Tests Section -----------------------------------------------------------
+    public static List<TestViewModel> getTestsList() {
+        ArrayList<TestViewModel> testsList = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_tests() }");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var test = new TestViewModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"),resultSet.getBigDecimal("charges"), resultSet.getString("technician_name"));
+                testsList.add(test);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return testsList;
+    }
+
+    public static TestModel getTest(int testId) {
+
+        TestModel test = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_test(?)}");
+            callableStatement.setInt(1, testId);
+
+            var resultSet = callableStatement.executeQuery();
+
+            while (resultSet.next()) {
+                test = new TestModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"),resultSet.getBigDecimal("charges"), resultSet.getInt("technician_id"));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return test;
+    }
+
+    public static boolean addTest(TestModel test) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL add_test(?,?,?,?,?)}");
+            callableStatement.setString(1, test.getTest_name());
+            callableStatement.setString(2, test.getReference_levels());
+            callableStatement.setString(3, test.getUnit());
+            callableStatement.setBigDecimal(4, test.getCharges());
+            callableStatement.setInt(5, test.getTechnician_id());
+            var rowsAffected = callableStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return false;
+    }
+
+    public static boolean updateTest(TestModel test) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL update_test(?,?,?,?,?,?)}");
+            //int,str,str,deci,int
+            callableStatement.setInt(1, test.getTest_id());
+            callableStatement.setString(2, test.getTest_name());
+            callableStatement.setString(3, test.getReference_levels());
+              callableStatement.setString(4, test.getUnit());
+            callableStatement.setBigDecimal(5, test.getCharges());
+            callableStatement.setInt(6, test.getTechnician_id());
+            var rowsAffected = callableStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public static boolean deleteTest(int testId) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL delete_test(?)}");
+            callableStatement.setInt(1, testId);
+            var rowsAffected = callableStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+    // Tests Section -----------------------------------------------------------
+    
 }

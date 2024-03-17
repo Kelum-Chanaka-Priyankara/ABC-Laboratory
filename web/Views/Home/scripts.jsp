@@ -51,6 +51,33 @@
     });
 // Payments Section End---------------------------------------------------------
 
+// Tests Section Start----------------------------------------------------------
+    $(document).on('click', '#modal-add-tests', function () {
+        var title = "Confirm Insertion", buttonText = "Save", buttonClass = "btn btn-primary", url = "Tests?page=Add";
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Tests", formMethod = "POST", actionType = "Insert";
+        changeForm(actionURL, formMethod, actionType);
+    });
+
+    $(document).on('click', '#modal-edit-tests', function () {
+        var title = "Confirm Modification", buttonText = "Update", buttonClass = "btn btn-warning", url = 'Tests?page=Edit&testId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Tests", formMethod = "POST", actionType = "Update";
+        changeForm(actionURL, formMethod, actionType);
+    });
+
+    $(document).on('click', '#modal-delete-tests', function () {
+        var title = "Confirm Deletion", buttonText = "Delete", buttonClass = "btn btn-danger", url = 'Tests?page=Delete&testId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Tests", formMethod = "GET", actionType = "Delete";
+        changeForm(actionURL, formMethod, actionType);
+    });
+// Tests Section End------------------------------------------------------------
+
+
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
         var currentButtonClass = $('#modal-button').attr('class');
