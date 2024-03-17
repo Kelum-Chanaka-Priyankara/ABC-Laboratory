@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -22,16 +23,17 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-                var session = request.getSession();
-                session.setAttribute("authType", "ptnt");
-                session.setAttribute("userId", 2);
-        request.getRequestDispatcher("/Views/Home/home.jsp").forward(request, response);
-    }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-
+        var session = request.getSession(false);
+        if (session != null) {
+            String authType = (String) session.getAttribute("authType");
+            if (authType == null) {
+                response.sendRedirect("/ABCLaboratory/Login?page=signin");
+            } else {
+                request.getRequestDispatcher("/Views/Home/home.jsp").forward(request, response);
+            }
+        } else {
+            response.sendRedirect("/ABCLaboratory");
+        }
     }
 
 }

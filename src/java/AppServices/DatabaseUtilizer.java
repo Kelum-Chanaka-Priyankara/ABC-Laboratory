@@ -739,6 +739,45 @@ public class DatabaseUtilizer {
         }
         return testReport;
     }
+    // Visitor Section ---------------------------------------------------------
+    
+    // Login Section -----------------------------------------------------------
+    public static LoginUserModel signIn(String username, String password) {
+        LoginUserModel user = null;
+        var hashCode = Encryptor.encryptSHA256(password);
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL sign_in(?,?) }");
+            callableStatement.setString(1, username);
+            callableStatement.setString(2, hashCode);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                user = new LoginUserModel(resultSet.getInt("user_id"), resultSet.getString("privilege"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getBoolean("is_password_changed"));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return user;
+    }
 
-    // Visitor section ---------------------------------------------------------
+    public static boolean changePassword(String tableName, String columnName, int userId, String oldPassword, String newPassword) {
+
+        var oldHash = Encryptor.encryptSHA256(oldPassword);
+        var newHash = Encryptor.encryptSHA256(newPassword);
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL change_password(?,?,?,?,?,?)}");
+            callableStatement.setString(1, tableName);
+            callableStatement.setString(2, columnName);
+            callableStatement.setInt(3, userId);
+            callableStatement.setString(4, oldHash);
+            callableStatement.setString(5, newHash);
+            callableStatement.registerOutParameter("rows_affected", Types.INTEGER);
+            callableStatement.executeUpdate();
+            var rowsAffected = callableStatement.getInt("rows_affected");
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return false;
+    }
+    // Login Section -----------------------------------------------------------
 }

@@ -146,6 +146,14 @@
     });
 // Visitor Section End----------------------------------------------------------
 
+// Sign Out Section-------------------------------------------------------------
+    $(document).on('click', '.logout-btn', function () {
+        $.get('Login?page=signout', function (response) {
+            window.location.replace(response.redirectUrl);
+        });
+    });
+// Sign Out Section-------------------------------------------------------------
+
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
         var currentButtonClass = $('#modal-button').attr('class');
