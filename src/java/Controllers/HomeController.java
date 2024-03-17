@@ -22,7 +22,9 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+                var session = request.getSession();
+                session.setAttribute("authType", "ptnt");
+        request.getRequestDispatcher("/Views/Home/home.jsp").forward(request, response);
     }
 
     @Override
