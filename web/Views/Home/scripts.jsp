@@ -103,6 +103,32 @@
     });
 // Patients Section End--------------------------------------------------------- 
 
+// Users Section Start----------------------------------------------------------
+    $(document).on('click', '#modal-add-users', function () {
+        var title = "Confirm Insertion", buttonText = "Save", buttonClass = "btn btn-primary", url = "Users?page=Add";
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Users", formMethod = "POST", actionType = "Insert";
+        changeForm(actionURL, formMethod, actionType);
+    });
+
+    $(document).on('click', '#modal-edit-users', function () {
+        var title = "Confirm Modification", buttonText = "Update", buttonClass = "btn btn-warning", url = 'Users?page=Edit&userId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Users", formMethod = "POST", actionType = "Update";
+        changeForm(actionURL, formMethod, actionType);
+    });
+
+    $(document).on('click', '#modal-delete-users', function () {
+        var title = "Confirm Deletion", buttonText = "Delete", buttonClass = "btn btn-danger", url = 'Users?page=Delete&userId=' + $(this).data('test-id');
+        openModal(title, buttonText, buttonClass, url);
+
+        var actionURL = "Users", formMethod = "GET", actionType = "Delete";
+        changeForm(actionURL, formMethod, actionType);
+    });
+// Users Section End------------------------------------------------------------
+
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
         var currentButtonClass = $('#modal-button').attr('class');

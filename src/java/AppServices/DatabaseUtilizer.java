@@ -402,7 +402,7 @@ public class DatabaseUtilizer {
         return totalProgress;
     }
     // Report Section ----------------------------------------------------------
-    
+
     // Tests Section -----------------------------------------------------------
     public static List<TestViewModel> getTestsList() {
         ArrayList<TestViewModel> testsList = new ArrayList<>();
@@ -410,7 +410,7 @@ public class DatabaseUtilizer {
             var callableStatement = connection.prepareCall("{ CALL get_tests() }");
             var resultSet = callableStatement.executeQuery();
             while (resultSet.next()) {
-                var test = new TestViewModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"),resultSet.getBigDecimal("charges"), resultSet.getString("technician_name"));
+                var test = new TestViewModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"), resultSet.getBigDecimal("charges"), resultSet.getString("technician_name"));
                 testsList.add(test);
             }
         } catch (Exception e) {
@@ -429,7 +429,7 @@ public class DatabaseUtilizer {
             var resultSet = callableStatement.executeQuery();
 
             while (resultSet.next()) {
-                test = new TestModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"),resultSet.getBigDecimal("charges"), resultSet.getInt("technician_id"));
+                test = new TestModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"), resultSet.getBigDecimal("charges"), resultSet.getInt("technician_id"));
             }
         } catch (Exception e) {
             System.err.println(e);
@@ -461,7 +461,7 @@ public class DatabaseUtilizer {
             callableStatement.setInt(1, test.getTest_id());
             callableStatement.setString(2, test.getTest_name());
             callableStatement.setString(3, test.getReference_levels());
-              callableStatement.setString(4, test.getUnit());
+            callableStatement.setString(4, test.getUnit());
             callableStatement.setBigDecimal(5, test.getCharges());
             callableStatement.setInt(6, test.getTechnician_id());
             var rowsAffected = callableStatement.executeUpdate();
@@ -483,9 +483,7 @@ public class DatabaseUtilizer {
         return false;
     }
     // Tests Section -----------------------------------------------------------
-    
-    
-    
+
     // Patients Section --------------------------------------------------------
     public static List<PatientViewModel> getPatientsList() {
 
@@ -583,4 +581,96 @@ public class DatabaseUtilizer {
         return false;
     }
     // Patients Section --------------------------------------------------------
+
+    // Users Section -----------------------------------------------------------
+    public static List<UserViewModel> getUsersList() {
+        var usersList = new ArrayList<UserViewModel>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{CALL get_users()}");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var user = new UserViewModel(resultSet.getInt("user_id"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getString("email"), resultSet.getString("phone_number"), resultSet.getString("role"));
+                usersList.add(user);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return usersList;
+    }
+
+    public static UserModel getUser(int userId) {
+        UserModel user = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_user(?)}");
+            callableStatement.setInt(1, userId);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                user = new UserModel(resultSet.getInt("user_id"), resultSet.getString("first_name"), resultSet.getString("last_name"), resultSet.getString("gender"), resultSet.getString("address"), resultSet.getString("email"), resultSet.getString("phone_number"), resultSet.getString("privilege"));
+            }
+        } catch (Exception e) {
+        }
+        return user;
+    }
+
+    public static boolean addUser(UserModel user) {
+        var passwordText = PasswordGenerator.generatePassword(12);
+        var hashCode = Encryptor.encryptSHA256(passwordText);
+        EmailSender mailsender = new EmailSender();
+        boolean isMailSuccess = false;
+
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{CALL add_user(?,?,?,?,?,?,?,?)}");
+            callableStatement.setString(1, user.getFirst_name());
+            callableStatement.setString(2, user.getLast_name());
+            callableStatement.setString(3, user.getGender());
+            callableStatement.setString(4, user.getAddress());
+            callableStatement.setString(5, user.getEmail());
+            callableStatement.setString(6, user.getPhone_number());
+            callableStatement.setString(7, hashCode);
+            callableStatement.setString(8, user.getPrivilege());
+
+            isMailSuccess = mailsender.sendPassword(user.getEmail(), user.getFirst_name(), user.getLast_name(), user.getGender(), passwordText);
+
+            if (isMailSuccess) {
+                var rowsAffected = callableStatement.executeUpdate();
+                return rowsAffected > 0;
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return false;
+    }
+
+    public static boolean updateUser(UserModel user) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{CALL update_user(?,?,?,?,?,?,?,?)}");
+            callableStatement.setInt(1, user.getUser_id());
+            callableStatement.setString(2, user.getFirst_name());
+            callableStatement.setString(3, user.getLast_name());
+            callableStatement.setString(4, user.getGender());
+            callableStatement.setString(5, user.getAddress());
+            callableStatement.setString(6, user.getEmail());
+            callableStatement.setString(7, user.getPhone_number());
+            callableStatement.setString(8, user.getPrivilege());
+            var rowsAffected = callableStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return false;
+    }
+
+    public static boolean deleteUser(int userId) {
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL delete_user(?) }");
+            callableStatement.setInt(1, userId);
+            var rowsAffected = callableStatement.executeUpdate();
+
+            return rowsAffected > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    // Users Section -----------------------------------------------------------
 }
