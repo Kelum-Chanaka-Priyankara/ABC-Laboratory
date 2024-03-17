@@ -323,7 +323,7 @@ public class DatabaseUtilizer {
         return lastWeekPregress;
     }
     //Dashboard Section---------------------------------------------------------
-    
+
     // Payment Section ---------------------------------------------------------
     //Payments
     public static List<PaymentViewModel> getPaymentsList() {
@@ -386,4 +386,21 @@ public class DatabaseUtilizer {
         return false;
     }
     //Payment Section ----------------------------------------------------------
+
+    // Report Section ----------------------------------------------------------
+    public static List<ProgressModel> getTotalProgress() {
+        ArrayList<ProgressModel> totalProgress = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_report_total_progress()}");
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                var dailyIncome = new ProgressModel(resultSet.getString("payment_date"), resultSet.getBigDecimal("income"));
+                totalProgress.add(dailyIncome);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return totalProgress;
+    }
+    // Report Section ----------------------------------------------------------
 }
