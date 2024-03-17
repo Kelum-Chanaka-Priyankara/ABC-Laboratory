@@ -139,6 +139,13 @@
     });
 // Technician Section End-------------------------------------------------------
 
+// Visitor Section Start--------------------------------------------------------
+    $(document).on('click', '#modal-download-visitor', function () {
+        var url = 'Visitor?page=Download&appointmentId=' + $(this).data('test-id');
+        window.open(url);
+    });
+// Visitor Section End----------------------------------------------------------
+
 // Functions Start--------------------------------------------------------------
     function openModal(title, buttonText, newButtonClass, pageURL) {
         var currentButtonClass = $('#modal-button').attr('class');

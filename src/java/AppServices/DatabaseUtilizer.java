@@ -704,4 +704,41 @@ public class DatabaseUtilizer {
     }
 
     // Technician Section ------------------------------------------------------
+    
+    // Visitor Section ---------------------------------------------------------
+    public static List<VisitorAppointmentViewModel> getVisitorAppointmentsList(int userId) {
+
+        ArrayList<VisitorAppointmentViewModel> visitorAppointments = new ArrayList<>();
+        try (var connection = DatabaseConnector.getConnection()) {
+
+            var callableStatement = connection.prepareCall("{ CALL get_patient_test_reports(?) }");
+            callableStatement.setInt(1, userId);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+
+                var appointment = new VisitorAppointmentViewModel(resultSet.getInt("appointment_id"), resultSet.getString("appointment_date"), resultSet.getString("appointment_time"), resultSet.getString("test_name"), resultSet.getString("report"));
+                visitorAppointments.add(appointment);
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return visitorAppointments;
+    }
+
+    public static TestReportPrintModel getPrintableTestReport(int appointmentId) {
+        TestReportPrintModel testReport = null;
+        try (var connection = DatabaseConnector.getConnection()) {
+            var callableStatement = connection.prepareCall("{ CALL get_patient_printable_report(?) }");
+            callableStatement.setInt(1, appointmentId);
+            var resultSet = callableStatement.executeQuery();
+            while (resultSet.next()) {
+                testReport = new TestReportPrintModel(resultSet.getString("patient_name"), resultSet.getString("gender"), resultSet.getInt("age"), resultSet.getString("phone_number"), resultSet.getInt("appointment_id"), resultSet.getString("appointment_date"), resultSet.getString("appointment_time"), resultSet.getString("test_name"), resultSet.getString("prescribed_by"), resultSet.getString("test_date"), resultSet.getString("test_time"), resultSet.getString("technician_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"), resultSet.getString("report"));
+            }
+        } catch (Exception e) {
+            System.err.println(e);
+        }
+        return testReport;
+    }
+
+    // Visitor section ---------------------------------------------------------
 }
