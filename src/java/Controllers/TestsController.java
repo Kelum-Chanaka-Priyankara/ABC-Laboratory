@@ -98,13 +98,13 @@ public class TestsController extends HttpServlet {
 
     private void addTest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        var test = new TestModel(0, request.getParameter("test_name"), request.getParameter("reference_levels"), request.getParameter("unit"),new BigDecimal(request.getParameter("charges")), Integer.parseInt(request.getParameter("technician_id")));
+        var test = new TestModel(0, request.getParameter("test_name"),  request.getParameter("unit"),request.getParameter("reference_levels"),new BigDecimal(request.getParameter("charges")), Integer.parseInt(request.getParameter("technician_id")));
         var isSuccess = DatabaseUtilizer.addTest(test);
     }
 
     private void updateTest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        var test = new TestModel(Integer.parseInt(request.getParameter("test_id")), request.getParameter("test_name"), request.getParameter("reference_levels"),request.getParameter("unit"), new BigDecimal(request.getParameter("charges")), Integer.parseInt(request.getParameter("technician_id")));
+        var test = new TestModel(Integer.parseInt(request.getParameter("test_id")), request.getParameter("test_name"), request.getParameter("unit"), request.getParameter("reference_levels"), new BigDecimal(request.getParameter("charges")), Integer.parseInt(request.getParameter("technician_id")));
         var isSuccess = DatabaseUtilizer.updateTest(test);
     }
 

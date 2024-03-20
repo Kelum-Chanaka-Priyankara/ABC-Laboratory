@@ -15,8 +15,8 @@ public class TestViewModel extends TestBaseModel {
 
     private String technician_name;
 
-    public TestViewModel(int test_id, String test_name, String reference_levels, String unit, BigDecimal charges, String technician_name) {
-        super(test_id, test_name, reference_levels, unit, charges);
+    public TestViewModel(int test_id, String test_name, String unit, String reference_levels, BigDecimal charges, String technician_name) {
+        super(test_id, test_name, unit, reference_levels, charges);
         this.technician_name = technician_name;
     }
 

@@ -410,7 +410,7 @@ public class DatabaseUtilizer {
             var callableStatement = connection.prepareCall("{ CALL get_tests() }");
             var resultSet = callableStatement.executeQuery();
             while (resultSet.next()) {
-                var test = new TestViewModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"), resultSet.getBigDecimal("charges"), resultSet.getString("technician_name"));
+                var test = new TestViewModel(resultSet.getInt("test_id"), resultSet.getString("test_name"),  resultSet.getString("unit"), resultSet.getString("reference_levels"),resultSet.getBigDecimal("charges"), resultSet.getString("technician_name"));
                 testsList.add(test);
             }
         } catch (Exception e) {
@@ -429,7 +429,7 @@ public class DatabaseUtilizer {
             var resultSet = callableStatement.executeQuery();
 
             while (resultSet.next()) {
-                test = new TestModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("reference_levels"), resultSet.getString("unit"), resultSet.getBigDecimal("charges"), resultSet.getInt("technician_id"));
+                test = new TestModel(resultSet.getInt("test_id"), resultSet.getString("test_name"), resultSet.getString("unit"),resultSet.getString("reference_levels"),  resultSet.getBigDecimal("charges"), resultSet.getInt("technician_id"));
             }
         } catch (Exception e) {
             System.err.println(e);
@@ -441,8 +441,8 @@ public class DatabaseUtilizer {
         try (var connection = DatabaseConnector.getConnection()) {
             var callableStatement = connection.prepareCall("{ CALL add_test(?,?,?,?,?)}");
             callableStatement.setString(1, test.getTest_name());
-            callableStatement.setString(2, test.getReference_levels());
-            callableStatement.setString(3, test.getUnit());
+            callableStatement.setString(2, test.getUnit());
+            callableStatement.setString(3, test.getReference_levels());
             callableStatement.setBigDecimal(4, test.getCharges());
             callableStatement.setInt(5, test.getTechnician_id());
             var rowsAffected = callableStatement.executeUpdate();
@@ -460,8 +460,8 @@ public class DatabaseUtilizer {
             //int,str,str,deci,int
             callableStatement.setInt(1, test.getTest_id());
             callableStatement.setString(2, test.getTest_name());
-            callableStatement.setString(3, test.getReference_levels());
-            callableStatement.setString(4, test.getUnit());
+            callableStatement.setString(3, test.getUnit());
+            callableStatement.setString(4, test.getReference_levels());
             callableStatement.setBigDecimal(5, test.getCharges());
             callableStatement.setInt(6, test.getTechnician_id());
             var rowsAffected = callableStatement.executeUpdate();
@@ -672,7 +672,7 @@ public class DatabaseUtilizer {
         return false;
     }
     // Users Section -----------------------------------------------------------
-    
+
     // Technician Section ------------------------------------------------------
     public static List<TechnicianTestReportViewModel> getTechnicianTestsList(int userId) {
         ArrayList<TechnicianTestReportViewModel> appointmentsList = new ArrayList<>();
@@ -704,7 +704,6 @@ public class DatabaseUtilizer {
     }
 
     // Technician Section ------------------------------------------------------
-    
     // Visitor Section ---------------------------------------------------------
     public static List<VisitorAppointmentViewModel> getVisitorAppointmentsList(int userId) {
 
@@ -740,7 +739,7 @@ public class DatabaseUtilizer {
         return testReport;
     }
     // Visitor Section ---------------------------------------------------------
-    
+
     // Login Section -----------------------------------------------------------
     public static LoginUserModel signIn(String username, String password) {
         LoginUserModel user = null;

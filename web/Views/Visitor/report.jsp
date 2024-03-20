@@ -30,8 +30,8 @@
                 <div style="width: 30%;">
                     <h3>Patient Details</h3>
                     <p>Name: ${testReport.patient_name}</p>
-                    <p>Age: ${testReport.gender}</p>
-                    <p>Gender: ${testReport.age}</p>
+                    <p>Age: ${testReport.age}</p>
+                    <p>Gender: ${testReport.gender}</p>
                     <p>Phone: ${testReport.phone_number}</p>
                 </div>
                 <div style="width: 30%;">

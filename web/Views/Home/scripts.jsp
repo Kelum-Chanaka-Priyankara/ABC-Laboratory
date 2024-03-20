@@ -79,7 +79,7 @@
 
 // Patients Section Start-------------------------------------------------------
     $(document).on('click', '#modal-add-patients', function () {
-        var title = "Confirm Insertion", buttonText = "Save", buttonClass = "btn btn-primary", url = "Patients?page=Add";
+        var title = "Confirm Registration", buttonText = "Save", buttonClass = "btn btn-primary", url = "Patients?page=Add";
         openModal(title, buttonText, buttonClass, url);
 
         var actionURL = "Patients", formMethod = "POST", actionType = "Insert";
@@ -105,7 +105,7 @@
 
 // Users Section Start----------------------------------------------------------
     $(document).on('click', '#modal-add-users', function () {
-        var title = "Confirm Insertion", buttonText = "Save", buttonClass = "btn btn-primary", url = "Users?page=Add";
+        var title = "Confirm Registration", buttonText = "Save", buttonClass = "btn btn-primary", url = "Users?page=Add";
         openModal(title, buttonText, buttonClass, url);
 
         var actionURL = "Users", formMethod = "POST", actionType = "Insert";

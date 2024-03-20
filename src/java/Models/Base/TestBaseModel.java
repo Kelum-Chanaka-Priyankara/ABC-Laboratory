@@ -11,18 +11,19 @@ import java.math.BigDecimal;
  * @author Kelum
  */
 public class TestBaseModel {
-     public TestBaseModel(int test_id, String test_name, String reference_levels, String unit, BigDecimal charges) {
+
+    public TestBaseModel(int test_id, String test_name, String unit, String reference_levels, BigDecimal charges) {
         this.test_id = test_id;
         this.test_name = test_name;
-        this.reference_levels = reference_levels;
         this.unit = unit;
+        this.reference_levels = reference_levels;
         this.charges = charges;
     }
 
     private int test_id;
     private String test_name;
-    private String reference_levels;
     private String unit;
+    private String reference_levels;
     private BigDecimal charges;
 
     public int getTest_id() {
@@ -32,16 +33,15 @@ public class TestBaseModel {
     public String getTest_name() {
         return test_name;
     }
-
+    
+    public String getUnit() {
+        return unit;
+    }
     public String getReference_levels() {
         return reference_levels;
     }
 
     public BigDecimal getCharges() {
         return charges;
-    }
-
-    public String getUnit() {
-        return unit;
     }
 }
