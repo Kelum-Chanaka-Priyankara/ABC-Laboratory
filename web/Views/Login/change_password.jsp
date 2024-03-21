@@ -56,7 +56,7 @@
             <div class="col-md-6 offset-md-3">
                 <div class="form-container">
                     <h2>Change Password</h2>
-                    <form id="passwordChangeForm" class="was-validated" action="Login" method="post" novalidate>
+                    <form id="passwordChangeForm" class="needs-validation" action="Login" method="post" novalidate>
                         <div class="mb-3">
                             <label for="currentPassword" class="form-label">Current Password</label>
                             <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -82,26 +82,28 @@
     </div>
 
 </div>
-    
-    
-    
+ 
     <script>
-        
-        (function () {
-            'use strict';
-            var forms = document.querySelectorAll('.needs-validation');
-            Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-        });
-    </script>
+            (function () {
+                'use strict';
+
+                var forms = document.querySelectorAll('.needs-validation');
+
+                Array.prototype.slice.call(forms)
+                        .forEach(function (form) {
+                            form.addEventListener('submit', function (event) {
+                                if (!form.checkValidity()) {
+                                    event.preventDefault();
+                                    event.stopPropagation();
+                                }
+
+                                form.classList.add('was-validated');
+                            }, false);
+                        });
+            })();
+
+
+        </script>
 </body>
 
 </html>

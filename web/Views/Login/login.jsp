@@ -18,7 +18,7 @@
         <style>
             body {
                 background-image: url('./images/login-bg.jpg');
-                background-size: cover;
+                /*background-size: cover;*/
                 background-position: center;
                 font-family: Arial, sans-serif;
                 margin: 0;
