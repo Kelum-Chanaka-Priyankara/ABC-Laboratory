@@ -153,7 +153,7 @@
                             <h5 class="modal-title" id="modal-title-label"> </h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form id="modal-form" method="" action="" class="was-validated" novalidate>
+                        <form id="modal-form" method="" action="" class="needs-validation" novalidate>
                             <div class="modal-body" id="modal-body">
 
 

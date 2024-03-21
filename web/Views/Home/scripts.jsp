@@ -291,20 +291,33 @@
     }
 
     (function () {
-        'use strict';
+    'use strict';
 
-        var forms = document.querySelectorAll('.needs-validation');
+    var forms = document.querySelectorAll('.needs-validation');
 
-        Array.prototype.slice.call(forms)
-                .forEach(function (form) {
-                    form.addEventListener('submit', function (event) {
-                        if (!form.checkValidity()) {
-                            event.preventDefault();
-                            event.stopPropagation();
-                        }
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
 
-                        form.classList.add('was-validated');
-                    }, false);
-                });
-    });
+                form.classList.add('was-validated');
+            }, false);
+        });
+})();
+
+
+$(document).on('input', '#phone_number', function() {
+            var phoneNumber = $(this).val().replace(/\D/g,''); // Remove non-digit characters
+            phoneNumber = phoneNumber.slice(0, 9); // Limit total length to 9 digits
+
+            // Add +94 prefix if the number is valid
+            if (phoneNumber.length === 9) {
+                phoneNumber = '+94' + phoneNumber;
+            }
+
+            $(this).val(phoneNumber); // Update input value
+        });
 </script>

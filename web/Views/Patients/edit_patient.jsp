@@ -43,6 +43,6 @@
     </div>
     <div class="mb-3">
         <label for="phone_number" class="form-label">Phone Number:</label>
-        <input type="text" class="form-control" id="phone_number" name="phone_number" value='${patient.phone_number}' required/>
+        <input type="text" class="form-control" id="phone_number" name="phone_number" value='${patient.phone_number}' maxlength="12" required/>
     </div>
 </div>

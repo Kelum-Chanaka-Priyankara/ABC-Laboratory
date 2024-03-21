@@ -95,10 +95,10 @@
         <div class="overlay"></div>
         <div class="login-container">
             <h2 class="login-heading">Login to Your Account</h2>
-            <form class="login-form was-validated" action="Login" method="post" novalidate>
+            <form class="login-form needs-validation" action="Login" method="post" novalidate>
                 <jstl:if test="${sessionScope.isUser eq false}">
                     <div class="text-danger">Username or Password you entered is incorrect.</div>
-                  </jstl:if>
+                </jstl:if>
                 <div class="mb-3">
                     <label for="username">Username</label><br>
                     <input type="text" class="form-control" name="username" id="username" placeholder="Email or Phone number" title="youremail@gmail.com or +94770000000" required/>
@@ -116,7 +116,9 @@
         <script>
             (function () {
                 'use strict';
+
                 var forms = document.querySelectorAll('.needs-validation');
+
                 Array.prototype.slice.call(forms)
                         .forEach(function (form) {
                             form.addEventListener('submit', function (event) {
@@ -128,7 +130,9 @@
                                 form.classList.add('was-validated');
                             }, false);
                         });
-            });
+            })();
+
+
         </script>
     </body>
 </html>
