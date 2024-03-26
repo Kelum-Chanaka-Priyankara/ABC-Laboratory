@@ -27,13 +27,4 @@ public class DatabaseConnector {
         }
         return connection;
     }
-
-    public static void main(String[] args) {
-        var connection = getConnection();
-        if (connection != null) {
-            System.out.println("Connection successful");
-        } else {
-            System.out.println("Connection failed");
-        }
-    }
 }
